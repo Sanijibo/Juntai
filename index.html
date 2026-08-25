@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juntshop AI Copywriter</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f8fafc; color: #334155; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { color: #0f172a; margin-top: 0; }
+        .btn { background: #2563eb; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        .btn:hover { background: #1d4ed8; }
+        #result { margin-top: 20px; white-space: pre-wrap; background: #f1f5f9; padding: 20px; border-radius: 6px; display: none; border: 1px solid #e2e8f0; }
+        .footer-links { text-align: center; margin-top: 30px; font-size: 12px; color: #64748b; }
+        .footer-links a { color: #2563eb; text-decoration: none; margin: 0 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>AI Facebook Caption Generator</h2>
+        <p>Upload a product photo to generate English and Hausa storytelling captions instantly.</p>
+
+        <input type="file" id="imageInput" accept="image/*" style="margin-bottom: 20px; width: 100%;">
+        <button class="btn" onclick="generateCaption()">Generate Captions ðŸš€</button>
+
+        <div id="result"></div>
+    </div>
+
+    <div class="footer-links">
+        Â© 2026 Juntshop AI | <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a> | <a href="#">Refund Policy</a>
+    </div>
+
+    <script>
+        async function generateCaption() {
+            const fileInput = document.getElementById('imageInput');
+            const resultDiv = document.getElementById('result');
+
+            if (!fileInput.files[0]) {
+                return alert("Please upload an image first.");
+            }
+
+            resultDiv.style.display = "block";
+            resultDiv.innerText = "Writing high-converting captions in English & Hausa... Please wait.";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            reader.onload = async () => {
+                const base64Image = reader.result.split(',')[1];
+                try {
+                    const response = await fetch('/api/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: base64Image })
+                    });
+                    const data = await response.json();
+                    resultDiv.innerText = data.caption || "Error generating caption.";
+                } catch (error) {
+                    resultDiv.innerText = "Connection error. Please try again.";
+                }
+            };
+        }
+    </script>
+</body>
+</html>
